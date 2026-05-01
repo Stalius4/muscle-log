@@ -1,0 +1,14 @@
+# Maven
+target/
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+
+# Agent
+.agent/
+
+# OS
+.DS_Store
+Thumbs.db
