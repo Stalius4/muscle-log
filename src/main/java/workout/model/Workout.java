@@ -7,7 +7,8 @@ import java.util.Objects;
 import java.time.Duration;
 
 public class Workout {
-    
+    private static int count = 1;
+    private int id;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private List<Exercise> exercises;
@@ -25,6 +26,8 @@ public Workout(String name){
     exercises = new ArrayList<Exercise>();
     this.name = name;
     
+    this.id = count;
+    Workout.count++;
 }
     public String getName(){
         return this.name;
@@ -35,8 +38,11 @@ public Workout(String name){
             throw new IllegalArgumentException("Name can not be null");
     }
         this.name = name;
-    }
 
+    }
+    public int getId(){
+        return this.id;
+    }
     /**
      * Sets the start time of the workout.
      * 
@@ -118,13 +124,13 @@ public Workout(String name){
         return false;
     }
     Workout other = (Workout) obj;
-    if(this.name.equals(other.name) && Objects.equals(this.startTime, other.startTime)){
+    if(this.id == other.id){
         return true;
     }
     return false;
 }
 @Override
 public int hashCode() {
-    return Objects.hash(this.name, this.startTime);
+    return Objects.hash(this.id);
 }
 }
