@@ -7,7 +7,6 @@ import java.util.Objects;
 import java.time.Duration;
 
 public class Workout {
-    private static int count = 1;
     private int id;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
@@ -25,9 +24,6 @@ public Workout(String name){
     }
     exercises = new ArrayList<Exercise>();
     this.name = name;
-    
-    this.id = count;
-    Workout.count++;
 }
     public String getName(){
         return this.name;
@@ -42,6 +38,13 @@ public Workout(String name){
     }
     public int getId(){
         return this.id;
+    }
+
+    public void setId(int id){
+        if(id <=0){
+            throw new IllegalArgumentException("Must be possitive number");
+        }
+        this.id = id;
     }
     /**
      * Sets the start time of the workout.
@@ -88,7 +91,9 @@ public Workout(String name){
     }
 
 
-
+    public LocalDateTime getEndTime(){
+        return endTime;
+    }
     /**
      * Get total durtaion of workout time.
      */
