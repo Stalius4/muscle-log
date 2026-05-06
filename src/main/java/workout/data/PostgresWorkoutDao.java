@@ -2,6 +2,7 @@ package workout.data;
 import workout.model.Workout;
 import java.util.List;
 import java.sql.Statement;
+import java.time.LocalDateTime;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -53,8 +54,6 @@ public class PostgresWorkoutDao implements WorkoutDao {
             //  It returns a number telling you how many rows were affected.
             int rows = ps.executeUpdate();
 
-
-
             // 2. Ask the messenger for the "Receipt" (The generated ID)
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 if (rs.next()) {
@@ -79,6 +78,32 @@ public class PostgresWorkoutDao implements WorkoutDao {
     @Override
     public Workout find(int id){
         String sql = "SELECT * FROM workouts WHERE id = ?";
+         Workout result = null;
+        try(Connection con = getConnection();
+        var ps = con.prepareStatement(sql)) {
+        
+            //set ? to id in sql statement
+        ps.setInt(1, id);
+            //get result and put it all in Workout obj
+        try (ResultSet rs = ps.executeQuery()){
+            if(rs.next()){
+                
+                String name = rs.getString("name");
+                result = new Workout(name);  
+            
+                LocalDateTime start = rs.getObject("start_time", LocalDateTime.class);
+                LocalDateTime end = rs.getObject("end_time", LocalDateTime.class);
+                result.setStartTime(start);
+                result.setEndTime(end);
+                result.setId(rs.getInt("id"));
+                
+            }
+            
+        }
+        } catch (Exception e) {
+            System.err.println("Database Error: " + e.getMessage()); // This helps you debug
+        }
+        return result;
     }
     
 
