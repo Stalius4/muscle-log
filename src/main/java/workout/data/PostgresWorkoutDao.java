@@ -1,5 +1,7 @@
 package workout.data;
 import workout.model.Workout;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.sql.Statement;
 import java.time.LocalDateTime;
@@ -96,9 +98,7 @@ public class PostgresWorkoutDao implements WorkoutDao {
                 result.setStartTime(start);
                 result.setEndTime(end);
                 result.setId(rs.getInt("id"));
-                
             }
-            
         }
         } catch (Exception e) {
             System.err.println("Database Error: " + e.getMessage()); // This helps you debug
@@ -109,14 +109,36 @@ public class PostgresWorkoutDao implements WorkoutDao {
 
     /**
      * Finds all workouts in the database.
-     * 
-     * 
      * @return List of Workout objects.
      */
     @Override
     public List<Workout> findAll(){
-        return null;
+        String sql = "SELECT * FROM workouts";
+        List<Workout> allWorkouts = new ArrayList<>();
+        
+        try (Connection con = getConnection();
+        var ps = con.prepareStatement(sql)){
+            try (ResultSet rs = ps.executeQuery()){
+               while((rs.next())){
+                
+                String name = rs.getString("name");
+                Workout workout = new Workout(name);  
+            
+                LocalDateTime start = rs.getObject("start_time", LocalDateTime.class);
+                LocalDateTime end = rs.getObject("end_time", LocalDateTime.class);
+                workout.setStartTime(start);
+                workout.setEndTime(end);
+                workout.setId(rs.getInt("id"));
+                allWorkouts.add(workout);
+            }
+        }    
+        } catch (Exception e) {
+             System.err.println("Database Error: " + e.getMessage()); // This helps you debug
+        }
+        return allWorkouts;
     }
+
+
 
 
     /**
