@@ -82,10 +82,10 @@ public class PostgresWorkoutDao implements WorkoutDao {
         String sql = "SELECT * FROM workouts WHERE id = ?";
          Workout result = null;
         try(Connection con = getConnection();
-        var ps = con.prepareStatement(sql)) {
+            var ps = con.prepareStatement(sql)) {
         
             //set ? to id in sql statement
-        ps.setInt(1, id);
+            ps.setInt(1, id);
             //get result and put it all in Workout obj
         try (ResultSet rs = ps.executeQuery()){
             if(rs.next()){
@@ -149,7 +149,19 @@ public class PostgresWorkoutDao implements WorkoutDao {
      */
     @Override
     public boolean delete(int id){
-        return false;
+        String sql = "DELETE  FROM workouts WHERE id = ?";
+        try(Connection con = getConnection();
+        var ps = con.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            // returns number of rows being deleted, so if it > 0 it is true
+            int rows = ps.executeUpdate();
+            return rows > 0;
+        
+        } catch (Exception e) {
+            System.err.println("Database Error: " + e.getMessage()); // This helps you debug
+            return false; 
+        }
+    
     }
 
 
