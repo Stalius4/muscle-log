@@ -171,7 +171,20 @@ public class PostgresWorkoutDao implements WorkoutDao {
      * @param workout The workout object.
      * @return true if the workout was successfully edited, false otherwise.
      */
+    @Override
     public boolean update(Workout workout){
-        return true;
+        String sql = "UPDATE workouts SET name = ?, start_time = ?, end_time = ? WHERE id = ?";
+        try (Connection con = getConnection();
+        var ps = con.prepareStatement(sql)){
+            ps.setString(1, workout.getName());
+            ps.setObject(2, workout.getStartTime());   // uses JDBC's mapping for LocalDateTime
+            ps.setObject(3, workout.getEndTime());
+            ps.setInt(4,workout.getId());
+            int rows = ps.executeUpdate();
+            return rows > 0;
+        } catch (Exception e) {
+            System.err.println("Database Error: " + e.getMessage()); // This helps you debug
+            return false;
+        }
     }
 }
